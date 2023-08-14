@@ -1,8 +1,9 @@
 FROM composer/composer as composer
 WORKDIR /app
 RUN composer create-project flarum/flarum
+RUN composer require fof/upload
 
-FROM php:apache
+FROM php:8.1-apache
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
             curl \
