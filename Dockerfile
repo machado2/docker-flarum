@@ -62,6 +62,7 @@ RUN composer require fof/bbcode-tabs:"*"
 RUN composer require fof/passport:*
 RUN composer require fof/discussion-thumbnail:"*"
 RUN composer require "fof/auth-discord:*"
+ADD mem.ini /usr/local/etc/php/conf.d/
 COPY flarum.conf /etc/apache2/sites-enabled/
 RUN a2enmod rewrite
 VOLUME ["/var/www/flarum"]
