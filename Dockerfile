@@ -61,6 +61,7 @@ RUN set -eux; \
 RUN docker-php-ext-install exif;
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY --from=composer /app/flarum /app/flarum
+ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY flarum.conf /etc/apache2/sites-enabled/
 RUN a2enmod rewrite
 VOLUME ["/var/www/flarum"]
