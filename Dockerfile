@@ -27,6 +27,7 @@ RUN set -eux; \
             --with-xpm \
             --with-freetype; \
     docker-php-ext-install gd; 
+RUN docker-php-ext-install exif;
 
 COPY --from=composer /app/flarum /app/flarum
 COPY flarum.conf /etc/apache2/sites-enabled/
