@@ -28,7 +28,7 @@ RUN set -eux; \
             --with-freetype; \
     docker-php-ext-install gd; 
 RUN docker-php-ext-install exif;
-
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY --from=composer /app/flarum /app/flarum
 COPY flarum.conf /etc/apache2/sites-enabled/
 RUN a2enmod rewrite
