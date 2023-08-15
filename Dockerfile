@@ -1,6 +1,35 @@
-FROM composer/composer as composer
+FROM php:8.1-apache
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends \
+            curl \
+            libmemcached-dev \
+            libz-dev \
+            libpq-dev \
+            libjpeg-dev \
+            libpng-dev \
+            libfreetype6-dev \
+            libssl-dev \
+            libwebp-dev \
+            libxpm-dev \
+            libmcrypt-dev \
+            libonig-dev;
+RUN set -eux; \
+    docker-php-ext-install pdo_mysql; \
+    docker-php-ext-configure gd \
+            --prefix=/usr \
+            --with-jpeg \
+            --with-webp \
+            --with-xpm \
+            --with-freetype; \
+    docker-php-ext-install gd; 
+RUN docker-php-ext-install exif;
+RUN apt-get install -y libzip-dev;
+RUN docker-php-ext-install zip;
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
 WORKDIR /app
 RUN composer create-project flarum/flarum
+WORKDIR /app/flarum
 RUN composer require fof/upload
 RUN composer require fof/formatting:"*"
 RUN composer require fof/links
@@ -33,35 +62,6 @@ RUN composer require fof/bbcode-tabs:"*"
 RUN composer require fof/passport:*
 RUN composer require fof/discussion-thumbnail:"*"
 RUN composer require "fof/auth-discord:*"
-
-FROM php:8.1-apache
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends \
-            curl \
-            libmemcached-dev \
-            libz-dev \
-            libpq-dev \
-            libjpeg-dev \
-            libpng-dev \
-            libfreetype6-dev \
-            libssl-dev \
-            libwebp-dev \
-            libxpm-dev \
-            libmcrypt-dev \
-            libonig-dev;
-RUN set -eux; \
-    docker-php-ext-install pdo_mysql; \
-    docker-php-ext-configure gd \
-            --prefix=/usr \
-            --with-jpeg \
-            --with-webp \
-            --with-xpm \
-            --with-freetype; \
-    docker-php-ext-install gd; 
-RUN docker-php-ext-install exif;
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-COPY --from=composer /app/flarum /app/flarum
-ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY flarum.conf /etc/apache2/sites-enabled/
 RUN a2enmod rewrite
 VOLUME ["/var/www/flarum"]
