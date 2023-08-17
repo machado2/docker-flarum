@@ -63,6 +63,8 @@ RUN composer require fof/passport:*
 RUN composer require fof/discussion-thumbnail:"*"
 RUN composer require "fof/auth-discord:*"
 RUN composer require "flarum/embed":"dev-master"
+RUN apt-get install -y cron
+COPY flarum-cron /etc/cron.d/flarum-cron
 ADD mem.ini /usr/local/etc/php/conf.d/
 COPY flarum.conf /etc/apache2/sites-enabled/
 RUN a2enmod rewrite

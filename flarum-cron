@@ -1,0 +1,1 @@
+* * * * * root cd /var/www/flarum && php flarum schedule:run >> /dev/null 2>&1
